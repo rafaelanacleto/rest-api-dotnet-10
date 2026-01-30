@@ -498,25 +498,32 @@
     ]
   },
   "packageFolders": {
-    "/home/rafael/.nuget/packages/": {}
+    "C:\\Users\\RafaelAnacleto\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/rafael/repos/rest-api-dotnet-10/RestApi/RestApi.API/RestApi.API.csproj",
+      "projectUniqueName": "C:\\repos\\azure\\rest-api-dotnet-10\\RestApi\\RestApi.API\\RestApi.API.csproj",
       "projectName": "RestApi.API",
-      "projectPath": "/home/rafael/repos/rest-api-dotnet-10/RestApi/RestApi.API/RestApi.API.csproj",
-      "packagesPath": "/home/rafael/.nuget/packages/",
-      "outputPath": "/home/rafael/repos/rest-api-dotnet-10/RestApi/RestApi.API/obj/",
+      "projectPath": "C:\\repos\\azure\\rest-api-dotnet-10\\RestApi\\RestApi.API\\RestApi.API.csproj",
+      "packagesPath": "C:\\Users\\RafaelAnacleto\\.nuget\\packages\\",
+      "outputPath": "C:\\repos\\azure\\rest-api-dotnet-10\\RestApi\\RestApi.API\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "/home/rafael/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\RafaelAnacleto\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net10.0"
       ],
       "sources": {
-        "/usr/lib/dotnet/library-packs": {},
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -569,7 +576,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/10.0.100/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.AspNetCore": "(,10.0.32767]",
           "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",
