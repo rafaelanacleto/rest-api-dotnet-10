@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Reflection.Metadata.Ecma335;
+using System.Runtime.CompilerServices;
 
 namespace RestApi.API.Controllers
 {
@@ -12,21 +13,21 @@ namespace RestApi.API.Controllers
         {
             if (IsNumeric(firtsNum) && IsNumeric(secondNum))
             {
-                var total = ConvertToLong(firtsNum) + ConvertToLong(secondNum);
-                return Ok();
+                decimal total = ConvertToLong(firtsNum) + ConvertToLong(secondNum);
+                return Ok(total);
 
             }
             return BadRequest();
         }
 
-        private int ConvertToLong(string num)
+        private decimal ConvertToLong(string num)
         {
-            throw new NotImplementedException();
+            return decimal.Parse(num);
         }
 
         private bool IsNumeric(string num)
         {
-            throw new NotImplementedException();
+            return decimal.TryParse(num, out _);
         }
     }
 
