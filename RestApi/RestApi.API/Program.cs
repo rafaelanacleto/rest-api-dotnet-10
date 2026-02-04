@@ -1,3 +1,6 @@
+using RestApi.API.Services;
+using RestApi.API.Services.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddSwaggerGen(); // Adiciona o gerador
-
+builder.Services.AddScoped<IMathOperations, MathOperations>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
