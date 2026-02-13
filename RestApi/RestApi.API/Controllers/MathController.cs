@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RestApi.API.Services.Interfaces;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
+using RestApi.API.Utils;
 
 namespace RestApi.API.Controllers
 {
@@ -9,12 +9,10 @@ namespace RestApi.API.Controllers
     [Route("[controller]")]
     public class MathController : ControllerBase
     {
-        private readonly IMathOperations _mathOperations;
         private readonly ILogger<MathController> _logger;
-        public MathController(ILogger<MathController> logger, IMathOperations mathOperations)
+        public MathController(ILogger<MathController> logger)
         {
             _logger = logger;
-            _mathOperations = mathOperations;
         }
 
         [HttpGet("sum/{firtsNum}/{secondNum}")]
@@ -22,7 +20,7 @@ namespace RestApi.API.Controllers
         {
             if (IsNumeric(firtsNum) && IsNumeric(secondNum))
             {
-                decimal total = _mathOperations.Sum(firtsNum, secondNum);
+                decimal total = MathRest.Sum(firtsNum, secondNum);
                 return Ok(total);
 
             }
@@ -34,7 +32,7 @@ namespace RestApi.API.Controllers
         {
             if (IsNumeric(firtsNum) && IsNumeric(secondNum))
             {
-                decimal total = _mathOperations.Subtract(firtsNum, secondNum);
+                decimal total = MathRest.Subtract(firtsNum, secondNum);
                 return Ok(total);
             }
             return BadRequest();
@@ -45,7 +43,7 @@ namespace RestApi.API.Controllers
         {
             if (IsNumeric(firtsNum) && IsNumeric(secondNum))
             {
-                decimal total = _mathOperations.Multiply(firtsNum, secondNum);
+                decimal total = MathRest.Multiply(firtsNum, secondNum);
                 return Ok(total);
             }
             return BadRequest();
@@ -56,7 +54,7 @@ namespace RestApi.API.Controllers
         {
             if (IsNumeric(firtsNum) && IsNumeric(secondNum))
             {
-                decimal total = _mathOperations.Divide(firtsNum, secondNum);
+                decimal total = MathRest.Divide(firtsNum, secondNum);
                 return Ok(total);
             }
             return BadRequest();
