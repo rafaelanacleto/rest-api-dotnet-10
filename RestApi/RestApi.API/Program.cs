@@ -1,3 +1,5 @@
+using RestApi.API.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,6 +7,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddSwaggerGen(); // Adiciona o gerador
+builder.Services.AddScoped<IPersonServices, PersonServices>(); // Registra o serviço de pessoa
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
 
@@ -14,6 +27,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger(); // Habilita o middleware Swagger
     app.UseSwaggerUI(); // Habilita a UI (/swagger)
 }
+
+app.UseCors();
 
 app.UseHttpsRedirection();
 
