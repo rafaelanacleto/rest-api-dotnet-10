@@ -1,0 +1,6 @@
+SELECT TOP (1000) [Id]
+      ,[Name]
+      ,[Age]
+      ,[Email]
+      ,[Address]
+  FROM [RestApiDb].[dbo].[People]
