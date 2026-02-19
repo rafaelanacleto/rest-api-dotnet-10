@@ -1,17 +1,27 @@
 ﻿using RestApi.API.Model;
+using RestApi.API.Repository;
 
 namespace RestApi.API.Services
 {
     public class PersonServices : IPersonServices
     {
+
+        private readonly IPersonRepository _personRepository;
+
+        public PersonServices(IPersonRepository personRepository)
+        {
+            _personRepository = personRepository;
+        }
+
         public Person Create(Person person)
         {
+            _personRepository.AddAsync(person);
             return person;
         }
 
         public void Delete(int id)
         {
-            throw new NotImplementedException();
+            _personRepository.DeleteAsync(id);            
         }
 
         public List<Person> GetAll()
