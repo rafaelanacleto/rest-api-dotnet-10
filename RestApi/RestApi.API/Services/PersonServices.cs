@@ -13,35 +13,37 @@ namespace RestApi.API.Services
             _personRepository = personRepository;
         }
 
-        public Person Create(Person person)
+        public async Task<Person> Create(Person person)
         {
-            _personRepository.AddAsync(person);
+            await _personRepository.AddAsync(person);
             return person;
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            _personRepository.DeleteAsync(id);            
+            await _personRepository.DeleteAsync(id);            
         }
 
-        public List<Person> GetAll()
+        public async Task<IEnumerable<Person>> GetAll()
         {
-            return _personRepository.GetAllAsync().Result.ToList();
+            return await _personRepository.GetAllAsync();
         }
 
-        public Person GetById(int id)
+        public async Task<Person?> GetById(int id)
         {
-            return _personRepository.GetByIdAsync(id).Result;
+            return await _personRepository.GetByIdAsync(id);
         }
 
-        public Person GetByName(string name)
+        public async Task<Person?> GetByName(string name)
         {
-            return _personRepository.GetAllAsync().Result.FirstOrDefault(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            var people = await _personRepository.GetAllAsync();
+            return people.FirstOrDefault(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
 
-        public Person Update(Person person)
+        public async Task<Person?> Update(Person person)
         {
-            return _personRepository.UpdateAsync(person).Result ? person : null;
+            var success = await _personRepository.UpdateAsync(person);
+            return success ? person : null;
         }
     }
 }

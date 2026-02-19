@@ -4,12 +4,11 @@ namespace RestApi.API.Services
 {
     public interface IPersonServices
     {
-        Person Create(Person person);
-        Person GetById(int id);
-        Person GetByName(string name);
-        List<Person> GetAll();
-        Person Update (Person person);
-        void Delete(int id);
-
+        Task<Person> Create(Person person);
+        Task<Person?> GetById(int id);
+        Task<Person?> GetByName(string name);
+        Task<IEnumerable<Person>> GetAll();
+        Task<Person?> Update(Person person);
+        Task Delete(int id);
     }
 }

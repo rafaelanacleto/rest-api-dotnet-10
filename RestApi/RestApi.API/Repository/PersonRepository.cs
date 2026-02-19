@@ -1,4 +1,4 @@
-
+using Microsoft.EntityFrameworkCore;
 using RestApi.API.Model;
 using RestApi.API.Repository;
 
@@ -12,47 +12,46 @@ public class PersonRepository : IPersonRepository
         _context = context;
     }
 
-    public Task<IEnumerable<Person>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Person>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        return Task.FromResult(_context.People.AsEnumerable());
+        return await _context.People.ToListAsync(cancellationToken); // Changed to use ToListAsync
     }
 
-    public Task<Person?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<Person?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        var person = _context.People.FirstOrDefault(p => p.Id == id);
-        return Task.FromResult(person);
+        return await _context.People.FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
     }
 
-    public Task<Person> AddAsync(Person person, CancellationToken cancellationToken = default)
+    public async Task<Person> AddAsync(Person person, CancellationToken cancellationToken = default)
     {
         _context.People.Add(person);
-        _context.SaveChanges();
-        return Task.FromResult(person);
+        await _context.SaveChangesAsync(cancellationToken);
+        return person;
     }
 
-    public Task<bool> UpdateAsync(Person person, CancellationToken cancellationToken = default)
+    public async Task<bool> UpdateAsync(Person person, CancellationToken cancellationToken = default)
     {
-        var existingPerson = _context.People.FirstOrDefault(p => p.Id == person.Id);
+        var existingPerson = await _context.People.FirstOrDefaultAsync(p => p.Id == person.Id, cancellationToken);
         if (existingPerson == null)
-            return Task.FromResult(false);
+            return false;
 
         existingPerson.Name = person.Name;
         existingPerson.Age = person.Age;
         existingPerson.Email = person.Email;
         existingPerson.Address = person.Address;
 
-        _context.SaveChanges();
-        return Task.FromResult(true);
+        await _context.SaveChangesAsync(cancellationToken);
+        return true;
     }
 
-    public Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
-        var person = _context.People.FirstOrDefault(p => p.Id == id);
+        var person = await _context.People.FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
         if (person == null)
-            return Task.FromResult(false);
+            return false;
 
         _context.People.Remove(person);
-        _context.SaveChanges();
-        return Task.FromResult(true);
+        await _context.SaveChangesAsync(cancellationToken);
+        return true;
     }
 }

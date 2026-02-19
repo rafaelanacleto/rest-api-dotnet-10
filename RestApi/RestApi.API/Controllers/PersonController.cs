@@ -17,16 +17,16 @@ namespace RestApi.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var people = _personServices.GetAll();
+            var people = await _personServices.GetAll();
             return Ok(people);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var person = _personServices.GetById(id);
+            var person = await _personServices.GetById(id);
             if (person == null)
             {
                 return NotFound();
@@ -35,9 +35,9 @@ namespace RestApi.API.Controllers
         }
 
         [HttpGet("name/{name}")]
-        public IActionResult GetByName(string name)
+        public async Task<IActionResult> GetByName(string name)
         {
-            var person = _personServices.GetByName(name);
+            var person = await _personServices.GetByName(name);
             if (person == null)
             {
                 return NotFound();
@@ -46,23 +46,23 @@ namespace RestApi.API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Person person)
+        public async Task<IActionResult> Create(Person person)
         {
-            var createdPerson = _personServices.Create(person);
+            var createdPerson = await _personServices.Create(person);
             return CreatedAtAction(nameof(GetById), new { id = createdPerson.Id }, createdPerson);
         }
 
         [HttpPut]
-        public IActionResult Update(Person person)
+        public async Task<IActionResult> Update(Person person)
         {
-            var updatedPerson = _personServices.Update(person);
+            var updatedPerson = await _personServices.Update(person);
             return Ok(updatedPerson);
         }
 
         [HttpDelete]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _personServices.Delete(id);
+            await _personServices.Delete(id);
             return NoContent();
         }
 
