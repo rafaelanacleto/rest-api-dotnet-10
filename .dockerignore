@@ -1,0 +1,54 @@
+# Diretórios de build
+**/bin/
+**/obj/
+**/out/
+**/publish/
+
+# Arquivos do Visual Studio / VS Code
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider
+.idea/
+*.sln.iml
+
+# Arquivos de cache e temporários
+**/.DS_Store
+**/Thumbs.db
+**/*.swp
+**/*~
+
+# Docker
+docker-compose.yml
+docker-compose.*.yml
+Dockerfile
+.dockerignore
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentação
+README.md
+LICENSE
+*.md
+
+# Scripts
+scripts/
+
+# Dados e logs
+**/appsettings.Development.json
+**/logs/
+**/*.log
+
+# Node modules (caso tenha frontend)
+**/node_modules/
+
+# Testes
+**/TestResults/
+**/*.trx

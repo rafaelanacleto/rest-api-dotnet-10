@@ -1,0 +1,176 @@
+# Pipeline Azure DevOps para REST API .NET 10
+# Esta pipeline faz build, testes e publica a imagem Docker
+
+trigger:
+  branches:
+    include:
+      - main
+      - develop
+  paths:
+    include:
+      - RestApi/**
+      - Dockerfile
+      - docker-compose.yml
+
+pr:
+  branches:
+    include:
+      - main
+      - develop
+
+variables:
+  # Configurações do Docker
+  dockerRegistryServiceConnection: 'your-acr-service-connection' # Alterar para sua Service Connection
+  imageRepository: 'restapi'
+  containerRegistry: 'yourregistry.azurecr.io' # Alterar para seu Azure Container Registry
+  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+  tag: '$(Build.BuildId)'
+  
+  # Configurações adicionais
+  vmImageName: 'ubuntu-latest'
+  buildConfiguration: 'Release'
+
+stages:
+  # Stage 1: Build & Test
+  - stage: Build
+    displayName: 'Build and Test'
+    jobs:
+      - job: Build
+        displayName: 'Build Application'
+        pool:
+          vmImage: $(vmImageName)
+        steps:
+          # Checkout do código
+          - checkout: self
+            fetchDepth: 0
+
+          # Instalar .NET SDK 10.0
+          - task: UseDotNet@2
+            displayName: 'Install .NET 10.0 SDK'
+            inputs:
+              packageType: 'sdk'
+              version: '10.x'
+              installationPath: $(Agent.ToolsDirectory)/dotnet
+
+          # Restaurar dependências
+          - task: DotNetCoreCLI@2
+            displayName: 'Restore NuGet Packages'
+            inputs:
+              command: 'restore'
+              projects: '**/RestApi.API.csproj'
+
+          # Build da aplicação
+          - task: DotNetCoreCLI@2
+            displayName: 'Build Application'
+            inputs:
+              command: 'build'
+              projects: '**/RestApi.API.csproj'
+              arguments: '--configuration $(buildConfiguration) --no-restore'
+
+          # Executar testes (se existirem)
+          # - task: DotNetCoreCLI@2
+          #   displayName: 'Run Tests'
+          #   inputs:
+          #     command: 'test'
+          #     projects: '**/*Tests.csproj'
+          #     arguments: '--configuration $(buildConfiguration) --no-build --collect:"XPlat Code Coverage"'
+
+          # Publicar resultados dos testes
+          # - task: PublishTestResults@2
+          #   displayName: 'Publish Test Results'
+          #   condition: succeededOrFailed()
+          #   inputs:
+          #     testResultsFormat: 'VSTest'
+          #     testResultsFiles: '**/*.trx'
+
+  # Stage 2: Docker Build & Push
+  - stage: Docker
+    displayName: 'Build and Push Docker Image'
+    dependsOn: Build
+    condition: succeeded()
+    jobs:
+      - job: DockerBuildPush
+        displayName: 'Docker Build and Push'
+        pool:
+          vmImage: $(vmImageName)
+        steps:
+          # Checkout do código
+          - checkout: self
+            fetchDepth: 0
+
+          # Docker Login no Azure Container Registry
+          - task: Docker@2
+            displayName: 'Login to ACR'
+            inputs:
+              command: login
+              containerRegistry: $(dockerRegistryServiceConnection)
+
+          # Build da imagem Docker
+          - task: Docker@2
+            displayName: 'Build Docker Image'
+            inputs:
+              command: build
+              repository: $(imageRepository)
+              dockerfile: $(dockerfilePath)
+              containerRegistry: $(dockerRegistryServiceConnection)
+              tags: |
+                $(tag)
+                latest
+
+          # Scan de segurança da imagem (opcional mas recomendado)
+          # - task: AzureContainerScan@1
+          #   displayName: 'Scan Docker Image'
+          #   inputs:
+          #     image: '$(containerRegistry)/$(imageRepository):$(tag)'
+
+          # Push da imagem para ACR
+          - task: Docker@2
+            displayName: 'Push Docker Image to ACR'
+            inputs:
+              command: push
+              repository: $(imageRepository)
+              containerRegistry: $(dockerRegistryServiceConnection)
+              tags: |
+                $(tag)
+                latest
+
+          # Logout do Docker
+          - task: Docker@2
+            displayName: 'Logout from ACR'
+            inputs:
+              command: logout
+              containerRegistry: $(dockerRegistryServiceConnection)
+
+  # Stage 3: Deploy (opcional - descomente se desejar deploy automático)
+  # - stage: Deploy
+  #   displayName: 'Deploy to Environment'
+  #   dependsOn: Docker
+  #   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  #   jobs:
+  #     - deployment: DeployToProduction
+  #       displayName: 'Deploy to Production'
+  #       pool:
+  #         vmImage: $(vmImageName)
+  #       environment: 'production'
+  #       strategy:
+  #         runOnce:
+  #           deploy:
+  #             steps:
+  #               # Deploy para Azure App Service
+  #               - task: AzureWebAppContainer@1
+  #                 displayName: 'Deploy to Azure App Service'
+  #                 inputs:
+  #                   azureSubscription: 'your-azure-subscription'
+  #                   appName: 'your-app-service-name'
+  #                   containers: '$(containerRegistry)/$(imageRepository):$(tag)'
+  #
+  #               # OU Deploy para AKS
+  #               # - task: Kubernetes@1
+  #               #   displayName: 'Deploy to AKS'
+  #               #   inputs:
+  #               #     connectionType: 'Azure Resource Manager'
+  #               #     azureSubscriptionEndpoint: 'your-azure-subscription'
+  #               #     azureResourceGroup: 'your-resource-group'
+  #               #     kubernetesCluster: 'your-aks-cluster'
+  #               #     command: 'apply'
+  #               #     arguments: '-f k8s/deployment.yaml'
