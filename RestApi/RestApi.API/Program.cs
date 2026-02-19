@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using RestApi.API.Repository;
 using RestApi.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +10,7 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddSwaggerGen(); // Adiciona o gerador
 builder.Services.AddScoped<IPersonServices, PersonServices>(); // Registra o serviço de pessoa
-
+builder.Services.AddScoped<IPersonRepository, PersonRepository>(); // Registra o repositório de pessoa
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 

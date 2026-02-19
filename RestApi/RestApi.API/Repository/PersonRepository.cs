@@ -3,30 +3,36 @@ using RestApi.API.Model;
 using RestApi.API.Repository;
 
 public class PersonRepository : IPersonRepository
-{
-    private readonly List<Person> _people = new();
+{    
+
+    private readonly ApplicationDbContext _context;
+
+    public PersonRepository(ApplicationDbContext context)
+    {
+        _context = context;
+    }
 
     public Task<IEnumerable<Person>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        return Task.FromResult(_people.AsEnumerable());
+        return Task.FromResult(_context.People.AsEnumerable());
     }
 
     public Task<Person?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        var person = _people.FirstOrDefault(p => p.Id == id);
+        var person = _context.People.FirstOrDefault(p => p.Id == id);
         return Task.FromResult(person);
     }
 
     public Task<Person> AddAsync(Person person, CancellationToken cancellationToken = default)
     {
-        person.Id = _people.Count > 0 ? _people.Max(p => p.Id) + 1 : 1;
-        _people.Add(person);
+        _context.People.Add(person);
+        _context.SaveChanges();
         return Task.FromResult(person);
     }
 
     public Task<bool> UpdateAsync(Person person, CancellationToken cancellationToken = default)
     {
-        var existingPerson = _people.FirstOrDefault(p => p.Id == person.Id);
+        var existingPerson = _context.People.FirstOrDefault(p => p.Id == person.Id);
         if (existingPerson == null)
             return Task.FromResult(false);
 
@@ -35,16 +41,18 @@ public class PersonRepository : IPersonRepository
         existingPerson.Email = person.Email;
         existingPerson.Address = person.Address;
 
+        _context.SaveChanges();
         return Task.FromResult(true);
     }
 
     public Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
-        var person = _people.FirstOrDefault(p => p.Id == id);
+        var person = _context.People.FirstOrDefault(p => p.Id == id);
         if (person == null)
             return Task.FromResult(false);
 
-        _people.Remove(person);
+        _context.People.Remove(person);
+        _context.SaveChanges();
         return Task.FromResult(true);
     }
 }

@@ -26,40 +26,22 @@ namespace RestApi.API.Services
 
         public List<Person> GetAll()
         {
-            return new List<Person>
-            {
-                new Person { Id = 1, Name = "John Doe", Age = 30, Address = "123 Main St" , Email = "john.doe@example.com" },
-                new Person { Id = 2, Name = "Jane Smith", Age = 25, Address = "456 Elm St", Email = "jane.smith@example.com" }
-            };
+            return _personRepository.GetAllAsync().Result.ToList();
         }
 
         public Person GetById(int id)
         {
-            return new Person
-            {
-                Id = id,
-                Name = "John Doe",
-                Age = 30,
-                Address = "123 Main St",
-                Email = "john.doe@example.com"
-            };
+            return _personRepository.GetByIdAsync(id).Result;
         }
 
         public Person GetByName(string name)
         {
-            return new Person
-            {
-                Id = 1,
-                Name = name,
-                Age = 30,
-                Address = "123 Main St",
-                Email = "john.doe@example.com"
-            };
+            return _personRepository.GetAllAsync().Result.FirstOrDefault(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
 
         public Person Update(Person person)
         {
-            return person;
+            return _personRepository.UpdateAsync(person).Result ? person : null;
         }
     }
 }
